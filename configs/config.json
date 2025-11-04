@@ -41,7 +41,8 @@
       "traffic_direction": "server_outbound_interface",
       "domain_name": "sntdom",
       "configure_host_name": "hostname",
-      "host_mac": "dvcmac"
+      "host_mac": "dvcmac",
+      "src_is_site_or_vpn": "inzone"
     },
     "ordered_fields": [
       "rt",
