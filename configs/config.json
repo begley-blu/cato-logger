@@ -13,18 +13,18 @@
     "custom_source_ip": ""
   },
   "cef": {
-    "vendor": "Cato Networks",
-    "product": "SASE Platform",
+    "vendor": "Check Point",
+    "product": "Cato SASE Platform",
     "version": "1.0",
     "field_mappings": {
-      "account_id": "aid",
+    "account_id": "aid",
       "bytes_in": "in",
       "bytes_out": "out",
-      "dest_country": "dst_country",
+      "dest_country_code": "dst_country",
       "dest_ip": "dst",
       "dest_port": "dpt",
       "protocol": "proto",
-      "src_country": "src_country",
+      "src_country_code": "src_country",
       "src_ip": "src",
       "src_port": "spt",
       "time": "rt",
@@ -33,7 +33,13 @@
       "dest_site_name": "outzone",
       "ad_name": "suid",
       "ip_protocol": "tunnel_protocol",
-      "action": "action_details"
+      "action": "action_details",
+      "vpn_user_email": "logged_on_user",
+      "network_rule": "rule_name",
+      "device_type": "host_type",
+      "device_os_type": "client_type_os",
+      "traffic_direction": "server_outbound_interface",
+      "domain_name": "deviceDnsDomain"
     },
     "ordered_fields": [
       "rt",
