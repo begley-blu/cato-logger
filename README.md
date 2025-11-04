@@ -32,7 +32,7 @@ The easiest way to install Cato Logger is with the automated installation script
 
 ```bash
 # Download and run installer
-curl -fsSL https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/begley-blu/cato-logger/main/install.sh | sudo bash
 ```
 
 Or if you've already cloned the repository:
@@ -64,8 +64,8 @@ If you prefer to build from source:
 
 ```bash
 # Clone repository
-git clone https://github.com/begley-blu/cato-integration-standalone.git
-cd cato-integration-standalone
+git clone https://github.com/begley-blu/cato-logger.git
+cd cato-logger
 
 # Build
 make build
@@ -93,7 +93,7 @@ sudo journalctl -u cato-logger -f
 ## Project Structure
 
 ```
-cato-integration-standalone/
+cato-logger/
 ├── cmd/
 │   └── cato-logger/     # Main application entry point
 │       └── main.go              # 186 lines (down from 980+)
@@ -492,7 +492,7 @@ Severity mapping:
 
 ## Support
 
-- **Issues**: https://github.com/begley-blu/cato-integration-standalone/issues
+- **Issues**: https://github.com/begley-blu/cato-logger/issues
 - **Documentation**: See [claude.md](claude.md) for detailed docs
 - **Cato API Docs**: https://api.catonetworks.com/documentation
 
@@ -519,3 +519,4 @@ Severity mapping:
 - Improved error handling and resilience
 - Systemd integration
 - Graceful shutdown and reload support
+
