@@ -12,7 +12,7 @@ SERVICE_FILE="deployments/systemd/cato-logger.service"
 CONFIG_TEMPLATE="configs/config.json"
 USER_NAME="cato-logger"
 GROUP_NAME="cato-logger"
-DEFAULT_BINARY_URL="https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/bin/cato-logger"
+DEFAULT_BINARY_URL="https://raw.githubusercontent.com/begley-blu/cato-logger/main/bin/cato-logger"
 
 # Colors for output
 RED='\033[0;31m'
@@ -149,9 +149,9 @@ if [ "$CONFIG_TEMPLATE_FOUND" = false ]; then
   echo "  Downloading config template from GitHub..."
   TEMP_CONFIG="/tmp/cato-logger-config.json"
   if [ "$DOWNLOAD_CMD" = "curl" ]; then
-    curl -fsSL "https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/configs/config.json" -o "$TEMP_CONFIG"
+    curl -fsSL "https://raw.githubusercontent.com/begley-blu/cato-logger/main/configs/config.json" -o "$TEMP_CONFIG"
   elif [ "$DOWNLOAD_CMD" = "wget" ]; then
-    wget -q "https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/configs/config.json" -O "$TEMP_CONFIG"
+    wget -q "https://raw.githubusercontent.com/begley-blu/cato-logger/main/configs/config.json" -O "$TEMP_CONFIG"
   else
     echo -e "${RED}Error: Cannot download config template (no curl or wget available)${NC}"
     exit 1
@@ -285,9 +285,9 @@ if [ "$SERVICE_FILE_FOUND" = false ]; then
   echo "  Downloading service file from GitHub..."
   TEMP_SERVICE="/tmp/cato-logger.service"
   if [ "$DOWNLOAD_CMD" = "curl" ]; then
-    curl -fsSL "https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/deployments/systemd/cato-logger.service" -o "$TEMP_SERVICE"
+    curl -fsSL "https://raw.githubusercontent.com/begley-blu/cato-logger/main/deployments/systemd/cato-logger.service" -o "$TEMP_SERVICE"
   elif [ "$DOWNLOAD_CMD" = "wget" ]; then
-    wget -q "https://raw.githubusercontent.com/begley-blu/cato-integration-standalone/main/deployments/systemd/cato-logger.service" -O "$TEMP_SERVICE"
+    wget -q "https://raw.githubusercontent.com/begley-blu/cato-logger/main/deployments/systemd/cato-logger.service" -O "$TEMP_SERVICE"
   else
     echo -e "${RED}Error: Cannot download service file (no curl or wget available)${NC}"
     exit 1
