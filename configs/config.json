@@ -40,7 +40,8 @@
       "device_os_type": "client_type_os",
       "traffic_direction": "server_outbound_interface",
       "domain_name": "sntdom",
-      "configure_host_name": "hostname"
+      "configure_host_name": "hostname",
+      "host_mac": "dvcmac"
     },
     "ordered_fields": [
       "rt",
