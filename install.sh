@@ -30,7 +30,7 @@ fi
 # Check if running on Ubuntu
 if [ ! -f /etc/os-release ] || ! grep -q "Ubuntu" /etc/os-release; then
   echo -e "${YELLOW}Warning: This script is designed for Ubuntu. Other distributions may work but are not officially supported.${NC}"
-  read -p "Continue anyway? (y/N): " -r
+  read -p "Continue anyway? (y/N): " -r </dev/tty
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   fi
@@ -81,9 +81,9 @@ echo -e "${BLUE}Step 2/8: Configuration Setup${NC}"
 echo "You can enter configuration values now or press Enter to skip and configure manually later."
 echo ""
 
-read -p "Enter Cato API Key (or press Enter to skip): " CATO_API_KEY
-read -p "Enter Cato Account ID (or press Enter to skip): " CATO_ACCOUNT_ID
-read -p "Enter Syslog Server IP (or press Enter to skip, default: localhost): " SYSLOG_SERVER
+read -p "Enter Cato API Key (or press Enter to skip): " CATO_API_KEY </dev/tty
+read -p "Enter Cato Account ID (or press Enter to skip): " CATO_ACCOUNT_ID </dev/tty
+read -p "Enter Syslog Server IP (or press Enter to skip, default: localhost): " SYSLOG_SERVER </dev/tty
 
 # Set defaults for empty values
 if [ -z "$SYSLOG_SERVER" ]; then
@@ -101,7 +101,7 @@ echo ""
 echo -e "Default: ${GREEN}${DEFAULT_BINARY_URL}${NC}"
 echo "Or provide a local file path (e.g., ./bin/cato-logger or /path/to/cato-logger)"
 echo ""
-read -p "Binary source (press Enter for default): " BINARY_SOURCE
+read -p "Binary source (press Enter for default): " BINARY_SOURCE </dev/tty
 
 # Use default if empty
 if [ -z "$BINARY_SOURCE" ]; then
@@ -162,7 +162,7 @@ fi
 
 if [ -f "$CONFIG_DIR/config.json" ]; then
   echo -e "  ${YELLOW}Config file already exists at $CONFIG_DIR/config.json${NC}"
-  read -p "  Overwrite existing config? (y/N): " -r
+  read -p "  Overwrite existing config? (y/N): " -r </dev/tty
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "  Keeping existing config file"
   else
