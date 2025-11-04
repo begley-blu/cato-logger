@@ -1,0 +1,70 @@
+{
+  "cato": {
+    "api_url": "https://api.catonetworks.com/api/v1/graphql2",
+    "api_key": "",
+    "account_id": ""
+  },
+  "syslog": {
+    "server": "localhost",
+    "port": 514,
+    "protocol": "tcp",
+    "max_message_size": 8192,
+    "use_event_ip_as_source": false,
+    "custom_source_ip": ""
+  },
+  "cef": {
+    "vendor": "Cato Networks",
+    "product": "SASE Platform",
+    "version": "1.0",
+    "field_mappings": {
+      "account_id": "aid",
+      "bytes_in": "in",
+      "bytes_out": "out",
+      "dest_country": "dst_country",
+      "dest_ip": "dst",
+      "dest_port": "dpt",
+      "protocol": "proto",
+      "src_country": "src_country",
+      "src_ip": "src",
+      "src_port": "spt",
+      "time": "rt",
+      "device_name": "client_name",
+      "src_site_name": "inzone",
+      "dest_site_name": "outzone",
+      "ad_name": "suid",
+      "ip_protocol": "tunnel_protocol",
+      "action": "action_details"
+    },
+    "ordered_fields": [
+      "rt",
+      "src",
+      "spt",
+      "dst",
+      "dpt",
+      "proto",
+      "in",
+      "out",
+      "aid",
+      "sco",
+      "dco",
+      "suid"
+    ]
+  },
+  "processing": {
+    "fetch_interval_seconds": 60,
+    "max_events_per_request": 5000,
+    "max_pagination_requests": 50,
+    "retry_attempts": 3,
+    "retry_delay_seconds": 5,
+    "max_backoff_delay_seconds": 300,
+    "connection_timeout_seconds": 30
+  },
+  "state": {
+    "marker_file": "/etc/cato-logger/last_marker.txt"
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "output": "stdout"
+  }
+}
