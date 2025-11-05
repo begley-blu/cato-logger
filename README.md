@@ -58,38 +58,6 @@ sudo systemctl status cato-logger
 sudo journalctl -u cato-logger -f
 ```
 
-### Manual Installation
-
-If you prefer to build from source:
-
-```bash
-# Clone repository
-git clone https://github.com/begley-blu/cato-logger.git
-cd cato-logger
-
-# Build
-make build
-
-# Install (requires sudo)
-sudo make install
-
-# Configure
-sudo cp /etc/cato-logger/config.json.example /etc/cato-logger/config.json
-sudo nano /etc/cato-logger/config.json
-# Set: cato.api_key, cato.account_id, syslog.server, etc.
-
-# Set secure permissions
-sudo chmod 600 /etc/cato-logger/config.json
-
-# Install and start service
-sudo make install-service
-sudo systemctl start cato-logger
-
-# Check status
-sudo systemctl status cato-logger
-sudo journalctl -u cato-logger -f
-```
-
 ## Project Structure
 
 ```
@@ -379,5 +347,6 @@ sudo systemctl start cato-logger
 - **`docs/`** - Additional documentation
 
 ### NOTICE
+
 
 This code is provided as-is to help security administrators access Cato Networks through a syslog server.
