@@ -56,6 +56,8 @@ func (p *Processor) ProcessEvents(ctx context.Context) error {
 
 	pollStart := time.Now()
 	pollEnd := pollStart
+	lastProgressLog := pollStart
+	progressInterval := time.Duration(p.cfg.FetchInterval) * time.Second
 	numErrors := 0
 
 	p.logger.Debug("starting event processing cycle", "has_marker", currentMarker != "")
@@ -114,14 +116,28 @@ func (p *Processor) ProcessEvents(ctx context.Context) error {
 			}
 		}
 
+		// Log progress at configured interval
+		pollEnd = time.Now()
+		if pollEnd.Sub(lastProgressLog) >= progressInterval {
+			elapsed := pollEnd.Sub(pollStart)
+			eventsPerSecond := 0.0
+			if elapsed.Seconds() > 0 && totalEventsProcessed > 0 {
+				eventsPerSecond = float64(totalEventsProcessed) / elapsed.Seconds()
+			}
+
+			p.logger.Info("processing progress",
+				"page", paginationCount,
+				"events_so_far", totalEventsProcessed,
+				"elapsed_sec", int(elapsed.Seconds()),
+				"rate", fmt.Sprintf("%.2f/sec", eventsPerSecond),
+				"marker_updates", markerUpdates)
+
+			lastProgressLog = pollEnd
+		}
+
 		if !page.HasMore {
 			p.logger.Debug("no more events available")
 			break
-		}
-
-		// Brief pause between pagination requests
-		if paginationCount < p.cfg.MaxPagination {
-			time.Sleep(100 * time.Millisecond)
 		}
 	}
 

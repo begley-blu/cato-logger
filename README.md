@@ -132,19 +132,16 @@ cato-logger/
 │   └── systemd/               # Systemd unit files
 │       └── cato-logger.service
 │
-├── docs/                       # Documentation
-├── Makefile                    # Build automation
 ├── go.mod                      # Go module definition
 ├── README.md                   # This file
-├── MIGRATION.md                # v3.1 → v3.2 migration guide
-└── claude.md                   # Detailed project documentation
 ```
 
 ## Configuration
 
 Configuration is managed through a single JSON file: `/etc/cato-logger/config.json`
 
-### Configuration File Structure
+### Configuration File Structure Example
+** Always use the latest config from the configs/ directory.
 
 ```json
 {
@@ -233,45 +230,7 @@ Example structured log output (JSON format):
 {"time":"2025-11-03T15:20:46Z","level":"info","msg":"processing cycle complete","duration_ms":1234,"events_processed":150}
 ```
 
-## Usage
-
-### Building
-
-```bash
-# Build binary
-make build
-
-# Format code
-make fmt
-
-# Run tests
-make test
-
-# Run locally
-make run
-```
-
-### Installation
-
-```bash
-# Automated installation
-sudo make install
-
-# Copy and customize configuration
-sudo cp /etc/cato-logger/config.json.example /etc/cato-logger/config.json
-sudo nano /etc/cato-logger/config.json
-
-# Set secure permissions
-sudo chmod 600 /etc/cato-logger/config.json
-
-# Create service user
-sudo useradd -r -s /usr/sbin/nologin -M -d /nonexistent cato-logger
-sudo chown -R cato-logger:cato-logger /etc/cato-logger
-
-# Install and start service
-sudo make install-service
-sudo systemctl enable --now cato-logger
-```
+## Manual Usage
 
 ### CLI Flags
 
@@ -287,7 +246,7 @@ cato-logger --verbose
 
 ## Monitoring
 
-### Logs
+### Logging using Journald
 
 The application uses structured logging with detailed metrics:
 
@@ -411,24 +370,6 @@ sudo systemctl start cato-logger
 - Go 1.18+
 - No external dependencies (stdlib only)
 
-### Running Locally
-
-```bash
-# With config file (development)
-cp configs/config.json ./config.json
-nano config.json  # Configure
-go run ./cmd/cato-logger
-
-# With custom config path
-go run ./cmd/cato-logger --config=/path/to/config.json
-
-# With debug logging
-go run ./cmd/cato-logger --verbose
-
-# Using Makefile
-make dev  # Runs with --verbose flag
-```
-
 ### Code Organization
 
 - **`cmd/`** - Application entry points
@@ -437,86 +378,6 @@ make dev  # Runs with --verbose flag
 - **`deployments/`** - Deployment resources
 - **`docs/`** - Additional documentation
 
-See [claude.md](claude.md) for detailed architecture documentation.
+### NOTICE
 
-## Makefile Targets
-
-```bash
-make help          # Show available targets
-make build         # Build the application
-make clean         # Remove build artifacts
-make test          # Run tests
-make fmt           # Format code
-make vet           # Run go vet
-make install       # Install to system
-make install-service # Install systemd service
-make uninstall     # Remove from system
-make run           # Build and run
-make dev           # Run with verbose logging
-```
-
-## CEF Message Format
-
-Events are formatted as CEF (Common Event Format):
-
-```
-CEF:0|Cato Networks|SASE Platform|1.0|Threat|Malware - IPS|10|rt=Nov 03 2025 15:20:45 src=192.168.1.100 dst=10.0.0.50 ...
-```
-
-Severity mapping:
-- **10**: Threat, Malware
-- **9**: Attack, Intrusion
-- **8**: Security
-- **7**: Policy Violation
-- **6**: Warning, Alert
-- **5**: Connectivity (default)
-- **4**: Network
-- **3**: Traffic
-- **2**: Info
-- **1**: Debug
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes (following Go conventions)
-4. Run tests: `make test`
-5. Format code: `make fmt`
-6. Submit pull request
-
-**Important**: This project uses only Go standard library. No external dependencies allowed.
-
-## License
-
-[Specify License]
-
-## Support
-
-- **Issues**: https://github.com/begley-blu/cato-logger/issues
-- **Documentation**: See [claude.md](claude.md) for detailed docs
-- **Cato API Docs**: https://api.catonetworks.com/documentation
-
-## Version History
-
-### v3.2 (Current)
-- **Breaking Change**: Configuration consolidated to single JSON file
-- **Breaking Change**: Removed health monitoring HTTP server (no port exposure)
-- **New**: Structured logging (JSON/text format with key-value fields)
-- **New**: Minimal CLI flags (only --config and --verbose)
-- Configuration directory changed: `/etc/cato-forwarder/` → `/etc/cato-logger/`
-- Service user changed: `cato-forwarder` → `cato-logger`
-- Main entry point reduced from 980+ to 186 lines
-- All logging now uses structured logger (no more fmt.Printf)
-- Removed 23 CLI flags, consolidated into config.json
-- Enhanced systemd service with security hardening
-- See [MIGRATION.md](MIGRATION.md) for upgrade instructions
-
-### v3.1
-- Refactored to modular architecture (cmd/, internal/, configs/, deployments/)
-- Zero external dependencies
-- Mixed configuration (.env + field_map.json + CLI flags)
-- Health monitoring HTTP server
-- Improved error handling and resilience
-- Systemd integration
-- Graceful shutdown and reload support
-
+This code is provided as-is to help security administrators access Cato Networks through a syslog server.

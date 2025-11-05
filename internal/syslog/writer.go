@@ -10,15 +10,17 @@ import (
 
 // Writer manages a resilient connection to a syslog server
 type Writer struct {
-	protocol       string
-	address        string
-	conn           net.Conn
-	reconnectCount int
-	lastReconnect  time.Time
-	maxReconnects  int
-	reconnectDelay time.Duration
-	connTimeout    time.Duration
-	logger         *logging.Logger
+	protocol         string
+	address          string
+	conn             net.Conn
+	reconnectCount   int
+	lastReconnect    time.Time
+	maxReconnects    int
+	reconnectDelay   time.Duration
+	connTimeout      time.Duration
+	successfulWrites int64
+	lastCounterReset time.Time
+	logger           *logging.Logger
 }
 
 // NewWriter creates a new syslog writer
@@ -31,13 +33,14 @@ func NewWriter(protocol, address string, connTimeout time.Duration, logger *logg
 	logger.Info("connected to syslog server", "protocol", protocol, "address", address)
 
 	return &Writer{
-		protocol:       protocol,
-		address:        address,
-		conn:           conn,
-		maxReconnects:  10,
-		reconnectDelay: 5 * time.Second,
-		connTimeout:    connTimeout,
-		logger:         logger,
+		protocol:         protocol,
+		address:          address,
+		conn:             conn,
+		maxReconnects:    10,
+		reconnectDelay:   5 * time.Second,
+		connTimeout:      connTimeout,
+		lastCounterReset: time.Now(),
+		logger:           logger,
 	}, nil
 }
 
@@ -50,8 +53,22 @@ func (w *Writer) Write(message string) error {
 	_, err := fmt.Fprintln(w.conn, message)
 	if err != nil {
 		w.logger.Debug("syslog write failed", "error", err.Error())
+		return err
 	}
-	return err
+
+	// Track successful writes and periodically reset reconnect counter
+	w.successfulWrites++
+
+	// Reset reconnect counter every hour of successful operation
+	if time.Since(w.lastCounterReset) >= 1*time.Hour && w.reconnectCount > 0 {
+		w.logger.Info("resetting reconnect counter after sustained successful operation",
+			"previous_count", w.reconnectCount,
+			"successful_writes", w.successfulWrites)
+		w.reconnectCount = 0
+		w.lastCounterReset = time.Now()
+	}
+
+	return nil
 }
 
 // Close closes the syslog connection
@@ -66,14 +83,19 @@ func (w *Writer) Close() error {
 // Reconnect attempts to reconnect to the syslog server
 func (w *Writer) Reconnect() error {
 	// Implement connection rate limiting
-	if time.Since(w.lastReconnect) < w.reconnectDelay {
+	timeSinceLastReconnect := time.Since(w.lastReconnect)
+	if timeSinceLastReconnect < w.reconnectDelay {
+		w.logger.Debug("reconnection rate limited",
+			"time_since_last", timeSinceLastReconnect,
+			"delay_required", w.reconnectDelay)
 		return fmt.Errorf("reconnection rate limited")
 	}
 
 	if w.reconnectCount >= w.maxReconnects {
 		w.logger.Error("max reconnection attempts exceeded",
 			"count", w.reconnectCount,
-			"max", w.maxReconnects)
+			"max", w.maxReconnects,
+			"note", "counter will reset after 1 hour of successful operation")
 		return fmt.Errorf("max reconnection attempts exceeded")
 	}
 
@@ -88,16 +110,18 @@ func (w *Writer) Reconnect() error {
 	conn, err := net.DialTimeout(w.protocol, w.address, w.connTimeout)
 	if err != nil {
 		w.reconnectCount++
-		w.lastReconnect = time.Time{}
+		w.lastReconnect = time.Now()
 		w.logger.Warn("syslog reconnection failed",
 			"attempt", w.reconnectCount,
+			"max", w.maxReconnects,
 			"error", err.Error())
 		return fmt.Errorf("failed to reconnect to syslog server: %w", err)
 	}
 
 	w.conn = conn
-	w.reconnectCount = 0 // Reset on successful reconnection
+	w.reconnectCount = 0           // Reset on successful reconnection
 	w.lastReconnect = time.Now()
+	w.lastCounterReset = time.Now() // Reset counter timer as well
 	w.logger.Info("syslog reconnection successful")
 	return nil
 }
